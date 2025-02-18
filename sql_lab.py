@@ -71,7 +71,7 @@ class LabSuite(object):
         cursor = conn.cursor()
         # Write your SQL query below. 
         # You shouldn't need to modify any other part of this function.
-        cursor.execute("""SELECT name, elevation / 5280 AS miles
+        cursor.execute("""SELECT name, elevation / 5280.0 AS miles
                           FROM Station
                           ORDER BY name;""")
         results = cursor.fetchall()
@@ -101,10 +101,11 @@ class LabSuite(object):
         cursor = conn.cursor()
         # Write your SQL query below. 
         # You shouldn't need to modify any other part of this function.
-        cursor.execute("""SELECT species, number
+        cursor.execute("""SELECT species, SUM(number) AS total_sighted
                           FROM Sighting
                           JOIN Shift ON Sighting.shift_id = Shift.shift_id
                           WHERE Shift.station_id=7
+                          GROUP BY species
                           ORDER BY species;""")
         results = cursor.fetchall()
         conn.close()
@@ -134,7 +135,7 @@ class LabSuite(object):
                             WHERE sh2.ranger_id = Ranger.ranger_id
                             AND s2.species = 'Falcon'
                           )
-                          ORDER BY Ranger.astname, Ranger.firstname;""")
+                          ORDER BY Ranger.lastname, Ranger.firstname;""")
         results = cursor.fetchall()
         conn.close()
         return results
@@ -147,7 +148,7 @@ class LabSuite(object):
         cursor = conn.cursor()
         # Write your SQL query below. 
         # You shouldn't need to modify any other part of this function.
-        cursor.execute("""SELECT name
+        cursor.execute("""SELECT name, trail_distance
                           FROM Station
                           WHERE trail_distance > (SELECT trail_distance FROM Station WHERE station_id = 4)
                           ORDER BY trail_distance ASC;""")
